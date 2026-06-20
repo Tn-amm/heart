@@ -1,133 +1,233 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>I LOVE YOU MEI 💖</title>
+<title>I LOVE YOU MEI</title>
 
 <style>
 body{
-  margin:0;
-  overflow:hidden;
-  background: radial-gradient(circle, #ffd6f0, #ff4d88);
-  font-family: Arial;
+ margin:0;
+ height:100vh;
+ overflow:hidden;
+ background:linear-gradient(#ffe6f2,#ff8fc3);
+ display:flex;
+ justify-content:center;
+ align-items:center;
+ perspective:1000px;
+ font-family:sans-serif;
 }
 
-.text{
-  position:absolute;
-  color:white;
-  font-weight:bold;
-  text-shadow:0 0 10px #ff4da6;
-  animation: floatUp linear infinite;
-  white-space:nowrap;
+.heart{
+ position:relative;
+ width:500px;
+ height:500px;
+ transform-style:preserve-3d;
+ animation:spin 10s linear infinite;
 }
 
-@keyframes floatUp{
-  0%{transform:translateY(100vh); opacity:0;}
-  10%{opacity:1;}
-  100%{transform:translateY(-20vh); opacity:0;}
+.word{
+ position:absolute;
+ color:white;
+ font-size:20px;
+ font-weight:bold;
+ text-shadow:0 0 15px #ff2f88;
+ transform-style:preserve-3d;
 }
 
-.center{
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  color:white;
-  font-size:45px;
-  text-shadow:0 0 20px #ff69b4;
-  animation:pulse 1s infinite;
+@keyframes spin{
+ from{
+  transform:rotateY(0deg) rotateX(10deg);
+ }
+ to{
+  transform:rotateY(360deg) rotateX(10deg);
+ }
+}
+
+.title{
+ position:absolute;
+ color:white;
+ font-size:45px;
+ font-weight:bold;
+ text-shadow:0 0 25px #ff0077;
+ animation:pulse 2s infinite;
+ z-index:5;
 }
 
 @keyframes pulse{
-  0%{transform:translate(-50%,-50%) scale(1);}
-  50%{transform:translate(-50%,-50%) scale(1.15);}
-  100%{transform:translate(-50%,-50%) scale(1);}
+ 50%{
+  transform:scale(1.15);
+ }
 }
+
 </style>
 </head>
 
 <body>
 
-<div class="center">💖 I LOVE YOU MEI 💖</div>
+<div class="title">
+I LOVE YOU MEI
+</div>
+
+<div class="heart" id="heart"></div>
+
 
 <script>
-// ---------- TEXT ----------
-function spawn(){
-  const t = document.createElement("div");
-  t.className="text";
 
-  const msg = [
-    "I LOVE YOU MEI 💖",
-    "MEI CUTE 🫶",
-    "LOVE LOVE 💕",
-    "MY MEI 💗",
-    "FOREVER 💞",
-    "BOOM LOVE 💖"
-  ];
+const heart = document.getElementById("heart");
 
-  t.innerText = msg[Math.floor(Math.random()*msg.length)];
+let text="I LOVE YOU MEI";
 
-  t.style.left = Math.random()*100 + "vw";
-  t.style.fontSize = (14 + Math.random()*28) + "px";
-  t.style.animationDuration = (3 + Math.random()*4) + "s";
+let points=[];
 
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),7000);
+
+// สร้างรูปหัวใจ
+for(let t=0;t<Math.PI*2;t+=0.12){
+
+ let x=16*Math.pow(Math.sin(t),3);
+
+ let y=
+ 13*Math.cos(t)
+ -5*Math.cos(2*t)
+ -2*Math.cos(3*t)
+ -Math.cos(4*t);
+
+
+ points.push({
+  x:x*15,
+  y:-y*15
+ });
+
 }
 
-setInterval(spawn,120);
 
-// ---------- MUMU KAWAII MUSIC ----------
-const AudioContext = window.AudioContext || window.webkitAudioContext;
-const audio = new AudioContext();
+// เติมข้อความรอบหัวใจ
+points.forEach((p,i)=>{
 
-function play(freq, time, type="triangle", vol=0.05){
-  const o = audio.createOscillator();
-  const g = audio.createGain();
+ let div=document.createElement("div");
 
-  o.type = type;
-  o.frequency.value = freq;
+ div.className="word";
 
-  g.gain.value = vol;
+ div.innerHTML=text;
 
-  o.connect(g);
-  g.connect(audio.destination);
+ let z=Math.sin(i)*80;
 
-  o.start();
-  o.stop(audio.currentTime + time);
+
+ div.style.left=
+ (250+p.x)+"px";
+
+ div.style.top=
+ (250+p.y)+"px";
+
+
+ div.style.transform=
+ `translateZ(${z}px)`;
+
+ div.style.animation=
+ `float${i} 3s infinite alternate`;
+
+ heart.appendChild(div);
+
+
+ let style=document.createElement("style");
+
+ style.innerHTML=`
+
+ @keyframes float${i}{
+  from{
+   margin-top:0px;
+  }
+  to{
+   margin-top:10px;
+  }
+ }
+
+ `;
+
+ document.head.appendChild(style);
+
+});
+
+
+
+
+// =================
+// KANON STYLE MUSIC BOX
+// =================
+
+const AudioContext =
+window.AudioContext ||
+window.webkitAudioContext;
+
+const ctx=new AudioContext();
+
+
+function playNote(freq){
+
+ let osc=ctx.createOscillator();
+ let gain=ctx.createGain();
+
+
+ osc.type="sine";
+
+ osc.frequency.value=freq;
+
+
+ gain.gain.value=0.08;
+
+
+ osc.connect(gain);
+ gain.connect(ctx.destination);
+
+
+ osc.start();
+
+ gain.gain.exponentialRampToValueAtTime(
+ 0.001,
+ ctx.currentTime+1
+ );
+
+
+ osc.stop(ctx.currentTime+1);
+
 }
 
-// 💖 kawaii melody (สดใสกว่าเดิม)
-const melody = [
-  523, 659, 784, 880, 784, 659,
-  698, 784, 659, 523,
-  587, 659, 784, 659,
-  523, 392
+
+// music box melody inspired
+let melody=[
+659,784,880,784,
+659,587,523,
+587,659,784,
+880,784,659,
+523,587,659
 ];
 
-// ✨ bell sparkle layer
-const sparkle = [1046, 1175, 1318];
 
-function startMusic(){
-  let i = 0;
+let i=0;
 
-  setInterval(()=>{
-    // main melody
-    play(melody[i % melody.length], 0.2, "triangle", 0.04);
 
-    // random cute sparkle (เหมือนเสียงกริ๊ง)
-    if(Math.random() > 0.6){
-      play(sparkle[Math.floor(Math.random()*sparkle.length)], 0.1, "sine", 0.02);
-    }
+function music(){
 
-    i++;
-  }, 220);
+ setInterval(()=>{
+
+  playNote(
+   melody[i%melody.length]
+  );
+
+  i++;
+
+ },500);
+
 }
 
-document.body.addEventListener("click", ()=>{
-  audio.resume();
-  startMusic();
-}, {once:true});
+
+
+document.body.onclick=()=>{
+
+ ctx.resume();
+
+ music();
+
+};
+
 
 </script>
 
