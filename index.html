@@ -2,11 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>I LOVE YOU TAN</title>
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -16,7 +15,7 @@ box-sizing:border-box;
 body{
 overflow:hidden;
 background:#000;
-font-family:Arial,Helvetica,sans-serif;
+font-family:monospace;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -27,226 +26,128 @@ canvas{
 position:fixed;
 top:0;
 left:0;
-width:100%;
-height:100%;
 z-index:-2;
 }
 
-.center{
+.scene{
 position:relative;
-width:420px;
-height:420px;
-display:flex;
-justify-content:center;
-align-items:center;
-perspective:1000px;
-}
-
-.text{
-position:absolute;
-font-size:32px;
-font-weight:bold;
-color:#ff79c6;
-text-align:center;
-z-index:20;
-text-shadow:
-0 0 10px #ff79c6,
-0 0 25px #ff1493,
-0 0 45px #ff1493;
-animation:glow 2s infinite alternate;
-}
-
-@keyframes glow{
-
-from{
-
-text-shadow:
-0 0 10px #ff79c6,
-0 0 20px #ff1493;
-
-}
-
-to{
-
-text-shadow:
-0 0 20px #ff79c6,
-0 0 50px #ff1493,
-0 0 80px hotpink;
-
-}
-
-}
-
-.ring{
-
-position:absolute;
-width:100%;
-height:100%;
 transform-style:preserve-3d;
-
+animation:spin 15s linear infinite;
 }
 
-.heart{
-
+.centerText{
 position:absolute;
 left:50%;
 top:50%;
-font-size:38px;
-color:#ff1493;
-transform-style:preserve-3d;
-
+transform:translate(-50%,-50%);
+font-size:55px;
+font-weight:bold;
+color:#ff69b4;
 text-shadow:
-
-0 0 10px #ff1493,
+0 0 10px #ff69b4,
 0 0 20px #ff69b4,
-0 0 40px #ff69b4;
-
-transition:.1s;
-
+0 0 40px #ff1493,
+0 0 80px #ff1493;
+white-space:nowrap;
 }
 
-</style>
+.heart{
+position:absolute;
+font-size:45px;
+color:#ff1493;
+text-shadow:
+0 0 10px #ff1493,
+0 0 25px #ff69b4;
+}
 
+@keyframes spin{
+from{
+transform:rotateY(0deg);
+}
+to{
+transform:rotateY(360deg);
+}
+}
+</style>
 </head>
 
 <body>
 
 <canvas id="matrix"></canvas>
 
-<div class="center">
-
-<div class="text">
+<div class="scene" id="scene">
+<div class="centerText">
 I LOVE YOU TANᡣ𐭩
 </div>
-
-<div class="ring" id="ring"></div>
-
 </div>
 
 <script>
-// =====================
-// MATRIX PINK RAIN
-// =====================
 
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
+// Matrix Pink Rain
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
 
-function resizeCanvas() {
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const letters="ILOVEYOUTAN♡♥01";
+const fontSize=18;
+const columns=canvas.width/fontSize;
+
+const drops=[];
+
+for(let x=0;x<columns;x++)
+drops[x]=1;
+
+function draw(){
+
+ctx.fillStyle="rgba(0,0,0,0.08)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#ff69b4";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+
+const text=letters[Math.floor(Math.random()*letters.length)];
+
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(drops[i]*fontSize>canvas.height&&Math.random()>0.975){
+drops[i]=0;
 }
-resizeCanvas();
-window.addEventListener("resize", resizeCanvas);
 
-const chars = "❤♡LOVEYOUTAN01";
-const fontSize = 18;
-let columns = Math.floor(canvas.width / fontSize);
-let drops = Array(columns).fill(1);
-
-function resetDrops() {
-  columns = Math.floor(canvas.width / fontSize);
-  drops = Array(columns).fill(1);
-}
-window.addEventListener("resize", resetDrops);
-
-function matrixRain() {
-
-  ctx.fillStyle = "rgba(0,0,0,0.08)";
-  ctx.fillRect(0,0,canvas.width,canvas.height);
-
-  ctx.fillStyle = "#ff4da6";
-  ctx.font = fontSize + "px monospace";
-
-  for(let i=0;i<drops.length;i++){
-
-      const txt = chars[Math.floor(Math.random()*chars.length)];
-
-      ctx.fillText(
-        txt,
-        i*fontSize,
-        drops[i]*fontSize
-      );
-
-      if(
-        drops[i]*fontSize > canvas.height &&
-        Math.random() > 0.975
-      ){
-          drops[i]=0;
-      }
-
-      drops[i]++;
-
-  }
+drops[i]++;
 
 }
 
-setInterval(matrixRain,35);
-
-
-// =====================
-// 3D HEART RING
-// =====================
-
-const ring = document.getElementById("ring");
-
-const hearts = [];
-
-const TOTAL = 24;
-
-const RADIUS = 170;
-
-for(let i=0;i<TOTAL;i++){
-
-    const h = document.createElement("div");
-
-    h.className = "heart";
-
-    h.innerHTML = "❤";
-
-    ring.appendChild(h);
-
-    hearts.push(h);
-
 }
 
-let angle = 0;
+setInterval(draw,35);
 
+// 3D Hearts
+const scene=document.getElementById("scene");
 
-// ===== Animation จะต่อใน Part 3 =====function animate(){
+const total=36;
+const radius=220;
 
-    angle += 0.015;
+for(let i=0;i<total;i++){
 
-    for(let i=0;i<TOTAL;i++){
+const heart=document.createElement("div");
 
-        const a = angle + (i*Math.PI*2/TOTAL);
+heart.className="heart";
+heart.innerHTML="❤";
 
-        const x = Math.cos(a) * RADIUS;
+const angle=(360/total)*i;
 
-        // วงรีแนวตั้ง (ฟิลบันไดเลื่อน)
-        const y = Math.sin(a) * 90;
+heart.style.transform=`
+rotateY(${angle}deg)
+translateZ(${radius}px)
+`;
 
-        // ระยะลึก 3D
-        const z = Math.sin(a) * 170;
-
-        // ด้านหน้าใหญ่ ด้านหลังเล็ก
-        const scale = 0.55 + ((z + 170) / 340) * 0.75;
-
-        hearts[i].style.transform =
-        `translate(-50%,-50%)
-         translate3d(${x}px,${y}px,${z}px)
-         scale(${scale})`;
-
-        hearts[i].style.opacity =
-        0.35 + ((z + 170) / 340) * 0.65;
-
-        hearts[i].style.zIndex = Math.floor(z + 200);
-    }
-
-    requestAnimationFrame(animate);
+scene.appendChild(heart);
 
 }
-
-animate();
 
 </script>
 
