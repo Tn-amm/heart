@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>I Love You Tan ❤️</title>
+<title>I Love You Tan 💗</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
@@ -21,6 +22,7 @@ body{
     overflow:hidden;
     font-family:'Poppins',sans-serif;
 }
+
 canvas{
     position:fixed;
     inset:0;
@@ -28,37 +30,74 @@ canvas{
 }
 
 .center{
-    z-index:10;
-}
-.center{
+
     position:absolute;
+
     top:50%;
     left:50%;
+
     transform:translate(-50%,-50%);
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:28px;
-    font-weight:600;
-    color:#fff;
+
+    text-align:center;
+
+    z-index:10;
+
+    color:white;
+
+}
+
+#line1{
+
+    font-size:32px;
+
+    font-weight:700;
+
+    letter-spacing:1px;
+
     text-shadow:
     0 0 10px #ff69b4,
-    0 0 20px #ff69b4;
+    0 0 25px #ff69b4;
+
+}
+
+#line2{
+
+    margin-top:10px;
+
+    font-size:28px;
+
+    font-weight:600;
+
+    text-shadow:
+    0 0 10px #ff69b4,
+    0 0 25px #ff69b4;
+
 }
 
 .heart{
-    color:#ff69b4;
+
     display:inline-block;
-    animation:bounce .8s infinite;
+
+    color:#ff69b4;
+
+    animation:heart .8s infinite;
+
 }
 
-@keyframes bounce{
-    0%,100%{
-        transform:scale(1);
-    }
-    50%{
-        transform:scale(1.35);
-    }
+@keyframes heart{
+
+0%,100%{
+
+transform:scale(1);
+
+}
+
+50%{
+
+transform:scale(1.4);
+
+}
+
 }
 
 </style>
@@ -67,66 +106,95 @@ canvas{
 
 <body>
 
-<div class="center">
-    <span>I love you tan</span>
-    <span class="heart">ᡣ𐭩</span>
-</div>
 <canvas id="matrix"></canvas>
 
+<div class="center">
+
+<div id="line1"></div>
+
+<div id="line2">
+
+<span id="name"></span>
+
+<span class="heart">ᡣ𐭩</span>
+
+</div>
+
+</div>
+
 <script>
+
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
-function resize(){
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+function resize() {
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
 }
+
 resize();
 
-const streams = [];
+const words = [];
+const gap = 170;
 
-function createStreams(){
-    streams.length = 0;
+function createWords() {
 
-    for(let x = 0; x < canvas.width; x += 180){
-        streams.push({
-            x,
+    words.length = 0;
+
+    for (let x = 40; x < canvas.width; x += gap) {
+
+        words.push({
+
+            x: x,
+
             y: Math.random() * -800,
-            speed: 1 + Math.random()
+
+            speed: 0.8 + Math.random() * 0.8
+
         });
+
     }
+
 }
 
-createStreams();
+createWords();
 
-function draw(){
+function matrix() {
 
-    ctx.fillStyle = "rgba(0,0,0,.15)";
+    ctx.fillStyle = "rgba(0,0,0,.18)";
     ctx.fillRect(0,0,canvas.width,canvas.height);
 
-    ctx.font = "16px monospace";
+    ctx.font = "17px monospace";
+
     ctx.fillStyle = "#ff69b4";
+
     ctx.shadowColor = "#ff69b4";
-    ctx.shadowBlur = 8;
 
-    streams.forEach(stream=>{
+    ctx.shadowBlur = 12;
 
-        for(let i=0;i<12;i++){
+    words.forEach(w=>{
+
+        for(let i=0;i<10;i++){
 
             ctx.fillText(
+
                 "I LOVE YOU",
-                stream.x,
-                stream.y - i*35
+
+                w.x,
+
+                w.y-i*42
+
             );
 
         }
 
-        stream.y += stream.speed;
+        w.y+=w.speed;
 
-        if(stream.y > canvas.height + 450){
+        if(w.y>canvas.height+500){
 
-            stream.y = -450;
-            stream.x = Math.random() * canvas.width;
+            w.y=-500;
+
+            w.x=Math.random()*canvas.width;
 
         }
 
@@ -134,12 +202,17 @@ function draw(){
 
 }
 
-setInterval(draw,30);
+setInterval(matrix,30);
 
 window.addEventListener("resize",()=>{
+
     resize();
-    createStreams();
+
+    createWords();
+
 });
+
 </script>
+
 </body>
 </html>
