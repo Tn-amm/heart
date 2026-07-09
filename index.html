@@ -98,6 +98,28 @@ transform:scale(1.4);
 
 }
 
+}.petal{
+    position:fixed;
+    top:-30px;
+    color:#ffb7d5;
+    font-size:18px;
+    pointer-events:none;
+    z-index:5;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+
+    from{
+        transform:translateY(-30px) rotate(0deg);
+        opacity:1;
+    }
+
+    to{
+        transform:translateY(110vh) rotate(360deg);
+        opacity:.2;
+    }
+
 }
 
 </style>
@@ -210,8 +232,96 @@ window.addEventListener("resize",()=>{
 
     createWords();
 
+});const line1 = document.getElementById("line1");
+const name = document.getElementById("name");
+
+const text1 = "I love you";
+const text2 = "tan";
+
+let i = 0;
+let j = 0;
+
+function typeLine1(){
+
+    if(i < text1.length){
+
+        line1.textContent += text1.charAt(i);
+
+        i++;
+
+        setTimeout(typeLine1,120);
+
+    }else{
+
+        setTimeout(typeLine2,300);
+
+    }
+
+}
+
+function typeLine2(){
+
+    if(j < text2.length){
+
+        name.textContent += text2.charAt(j);
+
+        j++;
+
+        setTimeout(typeLine2,140);
+
+    }
+
+}
+
+setTimeout(typeLine1,700);
+function createPetal(){
+
+    const petal = document.createElement("div");
+
+    petal.className = "petal";
+
+    petal.textContent = "🌸";
+
+    petal.style.left = Math.random()*100 + "vw";
+
+    petal.style.animationDuration =
+        (8 + Math.random()*5) + "s";
+
+    petal.style.fontSize =
+        (14 + Math.random()*8) + "px";
+
+    document.body.appendChild(petal);
+
+    setTimeout(()=>{
+        petal.remove();
+    },13000);
+
+}
+
+setInterval(createPetal,1800);
+setInterval(createPetal,1800);
+
+document.addEventListener("click",(e)=>{
+
+const heart=document.createElement("div");
+
+heart.className="float-heart";
+
+heart.textContent="💗";
+
+heart.style.left=e.clientX+"px";
+
+heart.style.top=e.clientY+"px";
+
+document.body.appendChild(heart);
+
+setTimeout(()=>{
+heart.remove();
+},2000);
+
 });
 
+</script>    
 </script>
 
 </body>
